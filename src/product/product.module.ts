@@ -1,0 +1,22 @@
+import { Module, ValidationPipe } from '@nestjs/common';
+import { ProductController } from './product.controller';
+import { APP_PIPE } from '@nestjs/core';
+
+@Module({
+  imports: [],
+  controllers: [ProductController],
+  // providers: [
+  //   {
+  //     provide: APP_PIPE,
+  //     useValue: new ValidationPipe({
+  //       whitelist: true,
+  //       forbidNonWhitelisted: true,
+  //       transform: true,
+  //       transformOptions: {
+  //         enableImplicitConversion: true,
+  //       },
+  //     }),
+  //   },
+  // ],
+})
+export class ProductModule {}
