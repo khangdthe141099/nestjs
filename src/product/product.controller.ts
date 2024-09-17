@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  Headers,
   Param,
   ParseBoolPipe,
   ParseIntPipe,
@@ -12,10 +11,12 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+import { HeadersDto } from './dto/headers.dto';
 import { ProductDto } from './dto/product.dto';
-import { ParseIdPipe } from './pipes/parseIdPipe';
-import { ZodValidationPipe } from './pipes/zodValidationPipe';
 import { productSchema, ProductSchemaDto } from './dto/zod.dto';
+import { ParseIdPipe } from './pipes/parseIdPipe';
+import { RequestHeader } from './pipes/request-header';
+import { ZodValidationPipe } from './pipes/zodValidationPipe';
 
 @Controller('product')
 export class ProductController {
@@ -42,7 +43,10 @@ export class ProductController {
   create(
     @Body()
     body: ProductSchemaDto,
-    @Headers() header
+    // @RequestHeader(
+    //   new ValidationPipe({ whitelist: true, validateCustomDecorators: true })
+    // )
+    header: HeadersDto
   ) {
     return {
       body,
