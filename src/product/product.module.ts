@@ -1,9 +1,12 @@
 import { Module, ValidationPipe } from '@nestjs/common';
 import { ProductController } from './product.controller';
 import { APP_PIPE } from '@nestjs/core';
+import { ProductService } from './product.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Product } from 'src/entities/product.entity';
 
 @Module({
-  imports: [],
+  imports: [TypeOrmModule.forFeature([Product])],
   controllers: [ProductController],
   providers: [
     {
@@ -17,6 +20,7 @@ import { APP_PIPE } from '@nestjs/core';
         },
       }),
     },
+    ProductService,
   ],
 })
 export class ProductModule {}

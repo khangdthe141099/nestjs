@@ -1,69 +1,59 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
-  ParseBoolPipe,
   ParseIntPipe,
   Patch,
   Post,
-  Query,
   UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
-import { HeadersDto } from './dto/headers.dto';
-import { ProductDto } from './dto/product.dto';
-import { productSchema, ProductSchemaDto } from './dto/zod.dto';
+import {
+  productSchema,
+  ProductSchemaDto,
+  updateProductSchema,
+  UpdateProductSchemaDto,
+} from './dto/zod.dto';
 import { ParseIdPipe } from './pipes/parseIdPipe';
-import { RequestHeader } from './pipes/request-header';
 import { ZodValidationPipe } from './pipes/zodValidationPipe';
+import { ProductService } from './product.service';
 
 @Controller('product')
 export class ProductController {
+  constructor(private readonly productService: ProductService) {}
+
   @Get()
-  getALl() {
-    return 'product';
+  getAll() {
+    return this.productService.getAll();
   }
 
-  //Validator parameters and query:
   @Get(':id')
-  getOne(
-    @Param('id', ParseIntPipe) id: number,
-    @Query('sort', ParseBoolPipe) sort: boolean
-  ) {
-    return {
-      id,
-      sort,
-    };
+  getById(@Param('id') id: any) {
+    return this.productService.getById(id);
   }
 
-  //Validator body:
   @Post()
   @UsePipes(new ZodValidationPipe(productSchema))
   create(
     @Body()
-    body: ProductSchemaDto,
-    // @RequestHeader(
-    //   new ValidationPipe({ whitelist: true, validateCustomDecorators: true })
-    // )
-    header: HeadersDto
+    body: ProductSchemaDto
   ) {
-    return {
-      body,
-      header,
-    };
+    return this.productService.create(body);
   }
 
   @Patch(':id')
+  @UsePipes(new ZodValidationPipe(updateProductSchema))
   update(
     @Param('id', ParseIdPipe) id,
-    @Body(
-      new ValidationPipe({
-        groups: ['update'],
-      })
-    )
-    body: ProductDto
+    @Body()
+    body: UpdateProductSchemaDto
   ) {
-    return body;
+    return this.productService.update(id, body);
+  }
+
+  @Delete()
+  delete(@Param('id', ParseIntPipe) id) {
+    this.productService.delete();
   }
 }
