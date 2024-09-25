@@ -7,25 +7,22 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UsePipes,
 } from '@nestjs/common';
-import {
-  productSchema,
-  ProductSchemaDto,
-  updateProductSchema,
-  UpdateProductSchemaDto,
-} from './dto/zod.dto';
+import { productSchema, ProductSchemaDto, UpdateProductSchemaDto } from './dto/zod.dto';
 import { ParseIdPipe } from './pipes/parseIdPipe';
 import { ZodValidationPipe } from './pipes/zodValidationPipe';
 import { ProductService } from './product.service';
+import { PaginationSchemaDTO } from './dto/pagination.dto';
 
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Get()
-  getAll() {
-    return this.productService.getAll();
+  getAll(@Query() paginationDTO: PaginationSchemaDTO) {
+    return this.productService.getAll(paginationDTO);
   }
 
   @Get(':id')
@@ -43,7 +40,7 @@ export class ProductController {
   }
 
   @Patch(':id')
-  @UsePipes(new ZodValidationPipe(updateProductSchema))
+  // @UsePipes(new ZodValidationPipe(updateProductSchema))
   update(
     @Param('id', ParseIdPipe) id,
     @Body()
@@ -52,8 +49,8 @@ export class ProductController {
     return this.productService.update(id, body);
   }
 
-  @Delete()
+  @Delete(':id')
   delete(@Param('id', ParseIntPipe) id) {
-    this.productService.delete();
+    this.productService.delete(id);
   }
 }

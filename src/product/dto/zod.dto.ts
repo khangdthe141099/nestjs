@@ -14,7 +14,7 @@ export const updateProductSchema = z
     description: z.string().min(5),
     price: z.number().positive(),
   })
-  .partial();
+  .optional();
 
 export type ProductSchemaDto = z.infer<typeof productSchema>;
 export type UpdateProductSchemaDto = z.infer<typeof updateProductSchema>;

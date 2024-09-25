@@ -3,17 +3,23 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from 'src/entities/product.entity';
 import { Repository } from 'typeorm';
 import { ProductSchemaDto, UpdateProductSchemaDto } from './dto/zod.dto';
+import { AFFECTED } from 'src/const';
+import { PaginationSchemaDTO } from './dto/pagination.dto';
 
 @Injectable()
 export class ProductService {
   constructor(@InjectRepository(Product) private productRepo: Repository<Product>) {}
 
-  async getAll() {
-    const product = await this.productRepo.find();
+  async getAll(paginationDTO: PaginationSchemaDTO) {
+    const product = await this.productRepo.find({
+      skip: paginationDTO.skip,
+      take: paginationDTO.limit,
+    });
 
     if (!product) throw new NotFoundException();
     return {
       success: true,
+      total: product.length,
       data: product,
     };
   }
@@ -37,9 +43,22 @@ export class ProductService {
   }
 
   async update(id: number, dto: UpdateProductSchemaDto) {
-    console.log({ dto });
     return await this.productRepo.update({ id }, dto);
   }
 
-  delete() {}
+  async delete(id: number) {
+    const deleteProduct = await this.productRepo.delete({
+      id,
+    });
+
+    if (deleteProduct.affected === AFFECTED.ERROR) {
+      return {
+        success: false,
+        message: 'Product not found',
+      };
+    }
+    return {
+      success: true,
+    };
+  }
 }
