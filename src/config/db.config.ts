@@ -8,7 +8,7 @@ export default registerAs(
     // Don't put this here, Instead put in the env file
     url: process.env.url,
     type: 'postgres',
-    port: +process.env.port,
+    port: +process.env.port_db,
     entities: [path.resolve(__dirname, '..') + '/**/*.entity{.ts,.js}'],
 
     synchronize: true,
