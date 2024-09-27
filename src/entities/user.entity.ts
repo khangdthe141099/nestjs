@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { Product } from './product.entity';
 import * as bcrypt from 'bcrypt';
+import { Role } from 'src/auth/enum/role.enum';
 
 @Entity()
 export class User {
@@ -33,6 +34,16 @@ export class User {
 
   @Column()
   password: string;
+
+  @Column({
+    type: 'enum',
+    enum: Role,
+    default: Role.USER,
+  })
+  role: Role;
+
+  @Column({ nullable: true })
+  hashedRefreshToken: string;
 
   //One user can have multiple products:
   @OneToMany(() => Product, (product) => product.user)

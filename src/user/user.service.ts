@@ -10,6 +10,10 @@ import { AFFECTED } from 'src/const';
 export class UserService {
   constructor(@InjectRepository(User) private userRepo: Repository<User>) {}
 
+  async updateHashedRefreshToken(userId: number, hashedRefreshToken: string) {
+    return await this.userRepo.update({ id: userId }, { hashedRefreshToken });
+  }
+
   async create(createUserDto: CreateUserSchemaDTO) {
     const user = this.userRepo.create(createUserDto); //hash password by userDTO
     return await this.userRepo.save(user); //Save user with password hash into the database
