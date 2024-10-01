@@ -17,7 +17,7 @@ import {
   createUserSchema,
   CreateUserSchemaDTO,
   UpdateUserSchemaDTO,
-} from './dto/create-user.dto';
+} from './schema/create-user.schema';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from 'src/guards/jwt-auth/jwt-auth.guard';
 

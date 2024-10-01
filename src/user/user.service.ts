@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateUserSchemaDTO, UpdateUserSchemaDTO } from './dto/create-user.dto';
+import { CreateUserSchemaDTO, UpdateUserSchemaDTO } from './schema/create-user.schema';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -38,7 +38,6 @@ export class UserService {
       where: {
         id,
       },
-      // select: ['firstName', 'lastName', 'avatarUrl'],
     });
 
     if (!user) throw new NotFoundException();
@@ -49,17 +48,11 @@ export class UserService {
   }
 
   async findByEmail(email: string) {
-    const user = await this.userRepo.findOne({
+    return await this.userRepo.findOne({
       where: {
         email,
       },
     });
-
-    if (!user) throw new NotFoundException();
-    return {
-      success: true,
-      data: user,
-    };
   }
 
   async update(id: number, updateUserDto: UpdateUserSchemaDTO) {
