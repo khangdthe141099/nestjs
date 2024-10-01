@@ -8,33 +8,34 @@ import {
   Patch,
   Post,
   Query,
-  UsePipes,
 } from '@nestjs/common';
-import { productSchema, ProductSchemaDto, UpdateProductSchemaDto } from './dto/zod.dto';
+import { ApiTags } from '@nestjs/swagger';
+import { CreateProductDto } from './dto/create-product.dto';
+import { PaginationDTO } from './dto/pagination.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 import { ParseIdPipe } from './pipes/parseIdPipe';
-import { ZodValidationPipe } from './pipes/zodValidationPipe';
 import { ProductService } from './product.service';
-import { PaginationSchemaDTO } from './dto/pagination.dto';
 
+@ApiTags('Product')
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Get()
-  getAll(@Query() paginationDTO: PaginationSchemaDTO) {
+  getAll(@Query() paginationDTO: PaginationDTO) {
     return this.productService.getAll(paginationDTO);
   }
 
   @Get(':id')
-  getById(@Param('id') id: any) {
+  getById(@Param('id') id: number) {
     return this.productService.getById(id);
   }
 
   @Post()
-  @UsePipes(new ZodValidationPipe(productSchema))
+  // @UsePipes(new ZodValidationPipe(productSchema))
   create(
     @Body()
-    body: ProductSchemaDto
+    body: CreateProductDto
   ) {
     return this.productService.create(body);
   }
@@ -42,15 +43,15 @@ export class ProductController {
   @Patch(':id')
   // @UsePipes(new ZodValidationPipe(updateProductSchema))
   update(
-    @Param('id', ParseIdPipe) id,
+    @Param('id', ParseIdPipe) id: number,
     @Body()
-    body: UpdateProductSchemaDto
+    body: UpdateProductDto
   ) {
     return this.productService.update(id, body);
   }
 
   @Delete(':id')
-  delete(@Param('id', ParseIntPipe) id) {
+  delete(@Param('id', ParseIntPipe) id: number) {
     this.productService.delete(id);
   }
 }

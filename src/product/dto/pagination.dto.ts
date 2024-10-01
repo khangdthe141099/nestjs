@@ -1,10 +1,15 @@
-import { z } from 'zod';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber, IsOptional } from 'class-validator';
 
-export const paginationSchema = z
-  .object({
-    skip: z.number().positive(),
-    limit: z.number().positive(),
-  })
-  .optional();
-
-export type PaginationSchemaDTO = z.infer<typeof paginationSchema>;
+//Validate by class-validator:
+export class PaginationDTO {
+  @ApiProperty()
+  @IsNumber()
+  @IsOptional()
+  skip: number;
+  //Always properties will match all groups:
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  limit: number;
+}

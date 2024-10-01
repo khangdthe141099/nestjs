@@ -9,34 +9,32 @@ import {
   Query,
   Req,
   UseGuards,
-  UsePipes,
 } from '@nestjs/common';
-import { PaginationSchemaDTO } from 'src/product/dto/pagination.dto';
-import { ZodValidationPipe } from 'src/product/pipes/zodValidationPipe';
-import {
-  createUserSchema,
-  CreateUserSchemaDTO,
-  UpdateUserSchemaDTO,
-} from './schema/create-user.schema';
-import { UserService } from './user.service';
 import { JwtAuthGuard } from 'src/guards/jwt-auth/jwt-auth.guard';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserSchemaDTO } from './schema/create-user.schema';
+import { UserService } from './user.service';
+import { PaginationDTO } from 'src/product/dto/pagination.dto';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiTags('User')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  @UsePipes(new ZodValidationPipe(createUserSchema))
-  create(@Body() createUserDto: CreateUserSchemaDTO) {
+  // @UsePipes(new ZodValidationPipe(createUserSchema))
+  create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
   @Get()
-  findAll(@Query() paginationDTO: PaginationSchemaDTO) {
+  findAll(@Query() paginationDTO: PaginationDTO) {
     return this.userService.findAll(paginationDTO);
   }
 
   //Authorization JWT:
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Req() req) {

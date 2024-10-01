@@ -3,8 +3,8 @@ import { CreateUserSchemaDTO, UpdateUserSchemaDTO } from './schema/create-user.s
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
-import { PaginationSchemaDTO } from 'src/product/dto/pagination.dto';
 import { AFFECTED } from 'src/const';
+import { PaginationDTO } from 'src/product/dto/pagination.dto';
 
 @Injectable()
 export class UserService {
@@ -19,7 +19,7 @@ export class UserService {
     return await this.userRepo.save(user); //Save user with password hash into the database
   }
 
-  async findAll(paginationDTO: PaginationSchemaDTO) {
+  async findAll(paginationDTO: PaginationDTO) {
     const user = await this.userRepo.find({
       skip: paginationDTO.skip,
       take: paginationDTO.limit,

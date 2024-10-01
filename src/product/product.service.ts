@@ -1,16 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AFFECTED } from 'src/const';
 import { Product } from 'src/entities/product.entity';
 import { Repository } from 'typeorm';
+import { PaginationDTO } from './dto/pagination.dto';
 import { ProductSchemaDto, UpdateProductSchemaDto } from './dto/zod.dto';
-import { AFFECTED } from 'src/const';
-import { PaginationSchemaDTO } from './dto/pagination.dto';
 
 @Injectable()
 export class ProductService {
   constructor(@InjectRepository(Product) private productRepo: Repository<Product>) {}
 
-  async getAll(paginationDTO: PaginationSchemaDTO) {
+  async getAll(paginationDTO: PaginationDTO) {
     const product = await this.productRepo.find({
       skip: paginationDTO.skip,
       take: paginationDTO.limit,
