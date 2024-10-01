@@ -7,7 +7,12 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(
     AppModule,
     new ExpressAdapter(),
-    { cors: true }
+    {
+      cors: {
+        origin: 'http://localhost:3000', // or your Next.js app's URL
+        credentials: true, // if you're sending cookies or authentication
+      },
+    }
   );
 
   app.enableCors({
