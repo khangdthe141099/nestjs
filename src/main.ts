@@ -8,19 +8,11 @@ async function bootstrap() {
     AppModule,
     new ExpressAdapter(),
     {
-      cors: {
-        origin: 'http://localhost:3000', // or your Next.js app's URL
-        credentials: true, // if you're sending cookies or authentication
-      },
+      cors: true,
     }
   );
 
-  app.enableCors({
-    origin: 'http://localhost:3000', // or your Next.js app's URL
-    credentials: true, // if you're sending cookies or authentication
-  });
-
-  app.enable('trust proxy');
+  app.enableCors();
 
   const config = new DocumentBuilder()
     .setTitle('NestJS API')

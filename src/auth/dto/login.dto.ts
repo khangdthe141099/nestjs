@@ -4,10 +4,9 @@ import { IsString } from 'class-validator';
 //Validate by class-validator:
 export class LoginDto {
   @ApiProperty()
-  @IsString()
+  @IsString({ message: 'email la string', always: true })
   email: string;
-  //Always properties will match all groups:
   @ApiProperty()
-  @IsString()
+  @IsString({ message: 'password la string', always: true })
   password: string;
 }

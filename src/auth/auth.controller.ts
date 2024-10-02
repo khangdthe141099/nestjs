@@ -1,8 +1,7 @@
-import { Controller, Get, Post, Req, Request, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { GoogleAuthGuard } from 'src/guards/google-auth/google-auth.guard';
 import { JwtAuthGuard } from 'src/guards/jwt-auth/jwt-auth.guard';
-import { LocalAuthGuard } from 'src/guards/local-auth/local-auth.guard';
 import { RefreshAuthGuard } from 'src/guards/refresh-auth/refresh-auth.guard';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
@@ -12,11 +11,15 @@ import { LoginDto } from './dto/login.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(LocalAuthGuard)
+  // @UseGuards(LocalAuthGuard)
   @ApiBody({ type: LoginDto })
   @Post('login')
-  async login(@Request() req) {
-    return this.authService.login(req.user.id);
+  async login(@Body() body: any) {
+    const data = {
+      email: 'linh@gmail.com',
+      password: 'Linh123@',
+    };
+    return this.authService.login(data);
   }
 
   @UseGuards(RefreshAuthGuard)

@@ -1,13 +1,14 @@
-import { UserService } from './../user/user.service';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
-import { AuthJwtPayload } from './types/auth-jwtPayload';
-import { JwtService } from '@nestjs/jwt';
-import refreshJwtConfig from './config/refresh-jwt.config';
 import { ConfigType } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 import * as argon2 from 'argon2';
-import { CurrentUser } from './types/current-user';
+import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
+import { UserService } from './../user/user.service';
+import refreshJwtConfig from './config/refresh-jwt.config';
+import { LoginDto } from './dto/login.dto';
+import { AuthJwtPayload } from './types/auth-jwtPayload';
+import { CurrentUser } from './types/current-user';
 @Injectable()
 export class AuthService {
   constructor(
@@ -29,17 +30,19 @@ export class AuthService {
     };
   }
 
-  async validateUser(email: string, password: string) {
-    const user = await this.userService.findByEmail(email);
+  async validateUser(body: any) {
+    const user = await this.userService.findByEmail(body.email);
     if (!user) throw new UnauthorizedException('User not found');
 
-    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    const isPasswordMatch = await bcrypt.compare(body.password, user.password);
     if (!isPasswordMatch) throw new UnauthorizedException('Invalid credentials');
 
     return { id: user.id };
   }
 
-  async login(userId: number) {
+  async login(body: any) {
+    const user = await this.validateUser(body);
+    const userId = user.id;
     const { accessToken, refreshToken } = await this.generateTokens(userId);
     const hashedRefreshToken = await argon2.hash(refreshToken);
     await this.userService.updateHashedRefreshToken(userId, hashedRefreshToken);
